@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
 
 #set(PCL_LIBRARY_DIRS "/usr/local/Cellar/pcl/1.9.1_4/lib")
-set(PCL_LIBRARY_DIRS "/usr/local/Cellar/pcl/1.9.1_8/lib")
+#set(PCL_LIBRARY_DIRS "/usr/local/Cellar/pcl/1.9.1_8/lib")
 
 #-- PCL_LIBRARY_DIRS: /usr/local/lib
 
