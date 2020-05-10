@@ -33,7 +33,7 @@ message(STATUS "PCL_SAMPLE_CONSESUS_LIBRARIES: " ${PCL_SAMPLE_CONSESUS_LIBRARIES
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 #link_directories("/usr/local/Cellar/pcl/1.9.1_4/lib")
-link_directories("/usr/local/Cellar/pcl/1.9.1_8/lib")
+#link_directories("/usr/local/Cellar/pcl/1.9.1_8/lib")
 
 add_definitions(${PCL_DEFINITIONS})
 list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
