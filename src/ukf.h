@@ -112,7 +112,6 @@ class UKF {
     Eigen::VectorXd z_;
     
     double time_;
-    
 };
 
 #endif  // UKF_H

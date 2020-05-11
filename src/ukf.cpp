@@ -16,21 +16,6 @@ UKF::UKF() {
     use_radar_ = false;
     //VectorXd z_ = VectorXd(3); // yin
     
-    // initial state vector
-    //x_ = VectorXd(5);
-    //x_ << 10*cos(2), 10*sin(2), 4, 10, -4;
-    
-    //
-    //double rho = 10;//meas_package.raw_measurements_(0);
-    //double phi = 2;//meas_package.raw_measurements_(1);
-    //double rhodot =-4;// meas_package.raw_measurements_(2);
-    //double x = rho * cos(phi);
-    //double y = rho * sin(phi);
-    //double vx = rhodot * cos(phi);
-    //double vy = rhodot * sin(phi);
-    //double v = sqrt(vx * vx + vy * vy);
-    // x_ << x, y, v, rho, rhodot;
-    // z <<  radar can measure r, phi, and r_dot
 
     /**
      * DO NOT MODIFY measurement noise values below.
@@ -66,6 +51,7 @@ UKF::UKF() {
     
     // initial covariance matrix
     P_ = MatrixXd(5, 5);
+    /*
     if(use_radar_)
     {
         P_.fill(0);
@@ -88,6 +74,7 @@ UKF::UKF() {
         z_ = VectorXd(2);
         z_.fill(0);
     }
+     */
     
     // Process noise standard deviation longitudinal acceleration in m/s^2
     std_a_ = 2;//2;
@@ -113,6 +100,8 @@ UKF::UKF() {
         
     time_ = 0.0;
     
+    is_initialized_ = false;
+    
 }
 
 UKF::~UKF() {}
@@ -123,6 +112,62 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
      * measurements.
      */
     //    if(use_radar_)
+    
+    z_=meas_package.raw_measurements_;
+    
+    if (!is_initialized_)
+    {
+        /*
+        if (FIRST MEASUREMENT IS RADAR)
+        {
+            // Initialize state vector x_ from RADAR measurement by transforming
+            // from radial to Cartesian coordinates.
+        }
+        else if (FIRST MEASUREMENT IS LIDAR)
+        {
+            // - Initialize state vector x_ form LIDAR measurement
+            // - Initialize the first two diagonal elements of P_ to the variances of the
+            //   LIDAR measurement noise
+            
+            
+        }
+         */
+        
+        if(meas_package.sensor_type_ == MeasurementPackage::RADAR) //FIRST MEASUREMENT IS RADAR
+        {
+            //x: px_p, py_p, v_p, yaw_p, yawd_p
+            //z: r , phi, r_dot
+            x_<< z_[0]*cos(z_[1]), z_[0]*sin(z_[1]), z_[2], 0, 0;
+            P_.fill(0);
+            P_(0,0) = 0.3*0.3;
+            P_(1,1) = 0.3*0.3;
+            P_(2,2) = 0.3*0.3;
+            P_(3,3) = 0.03;
+            P_(4,4) = 0.3;
+        }
+        if(meas_package.sensor_type_ == MeasurementPackage::LASER) //FIRST MEASUREMENT IS LIDAR
+        {
+            //x_<< z_[0], z_[1], 0, 0, 0;
+            P_.fill(0);
+            P_(0,0) = std_laspx_*std_laspx_;
+            P_(1,1) = std_laspy_*std_laspy_;
+            P_(2,2) = 0.1;
+            P_(3,3) = 0.1;
+            P_(4,4) = 0.2;
+            P_ << std_laspx_*std_laspx_, 0, 0, 0, 0,
+                  0, std_laspy_*std_laspy_, 0, 0, 0,
+                  0, 0, 1, 0, 0,
+                    0, 0, 0, 0.1, 0,
+                    0, 0, 0, 0, 0.2;
+            //P_(2,2) = 1;
+            //P_(3,3) = 0.1;
+            //P_(4,4) = 0.2;
+        }
+       time_  = meas_package.timestamp_;
+       is_initialized_ = true;
+       return;
+    }
+    
     double delta_t = (double(meas_package.timestamp_) - time_)/1000000.0;
 
     
@@ -320,7 +365,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
     
     // set measurement dimension, radar can measure r, phi, and r_dot
     int n_z = 2;
-    z_<< meas_package.raw_measurements_(0), meas_package.raw_measurements_(1);
+    //z_<< meas_package.raw_measurements_(0), meas_package.raw_measurements_(1);
     
     // create matrix for sigma points in measurement space
     Eigen::MatrixXd Zsig_ = MatrixXd(n_z, 2 * n_aug_ + 1);
@@ -510,7 +555,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     //z_(0) = 0.1;
     //z_(1) = 0.1;
     //z_(2) = 0.1;
-    z_=meas_package.raw_measurements_;
+    //z_=meas_package.raw_measurements_;
     //z_<< meas_package.raw_measurements_(0),meas_package.raw_measurements_(1),meas_package.raw_measurements_(2);
 
     VectorXd z_diff = z_ - z_pred_;
