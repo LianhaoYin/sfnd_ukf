@@ -13,7 +13,7 @@ UKF::UKF() {
     use_laser_ = true;
     
     // if this is false, radar measurements will be ignored (except during init)
-    use_radar_ = false;
+    use_radar_ = true;
     //VectorXd z_ = VectorXd(3); // yin
     
 
@@ -77,10 +77,10 @@ UKF::UKF() {
      */
     
     // Process noise standard deviation longitudinal acceleration in m/s^2
-    std_a_ = 2;//2;
+    std_a_ = 0.8;//2;
     
     // Process noise standard deviation yaw acceleration in rad/s^2
-    std_yawdd_ = 2;//1; //30;
+    std_yawdd_ = 0.5;//1; //30;
     
     
     // yin
@@ -144,21 +144,27 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
             P_(2,2) = 0.3*0.3;
             P_(3,3) = 0.03;
             P_(4,4) = 0.3;
+            P_(0,0) = 1;
+            P_(1,1) = 1;
+            P_(2,2) = 1;
+            P_(3,3) = 1;
+            P_(4,4) = 1;
+            
         }
         if(meas_package.sensor_type_ == MeasurementPackage::LASER) //FIRST MEASUREMENT IS LIDAR
         {
-            //x_<< z_[0], z_[1], 0, 0, 0;
+            x_<< z_[0], z_[1], 0, 0, 0;
             P_.fill(0);
-            P_(0,0) = std_laspx_*std_laspx_;
-            P_(1,1) = std_laspy_*std_laspy_;
-            P_(2,2) = 0.1;
-            P_(3,3) = 0.1;
-            P_(4,4) = 0.2;
-            P_ << std_laspx_*std_laspx_, 0, 0, 0, 0,
-                  0, std_laspy_*std_laspy_, 0, 0, 0,
-                  0, 0, 1, 0, 0,
-                    0, 0, 0, 0.1, 0,
-                    0, 0, 0, 0, 0.2;
+            P_(0,0) = 1;
+            P_(1,1) = 1;
+            P_(2,2) = 1;//0.1;
+            P_(3,3) = 0.0225;
+            P_(4,4) = 0.0225;
+            //P_ << std_laspx_*std_laspx_, 0, 0, 0, 0,
+            //      0, std_laspy_*std_laspy_, 0, 0, 0,
+            //      0, 0, 1, 0, 0,
+            //        0, 0, 0, 0.1, 0,
+             //       0, 0, 0, 0, 0.2;
             //P_(2,2) = 1;
             //P_(3,3) = 0.1;
             //P_(4,4) = 0.2;

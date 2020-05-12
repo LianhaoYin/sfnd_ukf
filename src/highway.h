@@ -54,7 +54,7 @@ public:
 		{
 			UKF ukf1;
             //ukf1.x_<< 10*cos(2), 10*sin(2), 4, 10, -4;
-            ukf1.x_<< -10, 4, 5, 0, 0;
+            //ukf1.x_<< -10, 4, 5, 0, 0;
 			car1.setUKF(ukf1);
 		}
 		traffic.push_back(car1);
@@ -69,7 +69,7 @@ public:
 		if( trackCars[1] )
 		{
 			UKF ukf2;
-            ukf2.x_<< 25, -4, -6,0,0;
+            //ukf2.x_<< 25, -4, -6,0,0;
 			car2.setUKF(ukf2);
 		}
 		traffic.push_back(car2);
@@ -94,7 +94,7 @@ public:
 		if( trackCars[2] )
 		{
 			UKF ukf3;
-            ukf3.x_<< -12, 0, 1,0,0;
+            //ukf3.x_<< -12, 0, 1,0,0;
 			car3.setUKF(ukf3);
 		}
 		traffic.push_back(car3);
